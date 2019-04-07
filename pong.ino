@@ -14,8 +14,11 @@ void printCharacter(char character)
 {
     display.setTextSize(1);
     display.setTextColor(WHITE);
-    display.setCursor(SCREEN_WIDTH / 2 - 1, SCREEN_HEIGHT / 2 - 1);
-    display.println(String(character));
+    display.setCursor(1, SCREEN_HEIGHT / 2 - 1);
+    //String received = Serial.readString();
+    String received = Serial.readStringUntil('\n');
+    delay(1000);
+    display.println(received);
 }
 
 char incrementing_character = 'A';
@@ -37,9 +40,6 @@ void setup()
 
 void loop()
 {
-    if(incrementing_character > 'z')
-        incrementing_character = 'A';
-
     display.clearDisplay();
     // Actual display code here
     
@@ -48,6 +48,4 @@ void loop()
     // End actual display code
     display.display();
 
-    delay(200);
-    ++incrementing_character;
 }
