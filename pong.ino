@@ -5,23 +5,90 @@
 
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 32
+#define NDEBUG
 
 #define OLED_RESET 4
 
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
-void printCharacter(char character)
+int incomingByte = 0;
+
+void printCharacter()
 {
-    display.setTextSize(1);
-    display.setTextColor(WHITE);
+    //display.setTextSize(1);
+    //display.setTextColor(WHITE);
     display.setCursor(1, SCREEN_HEIGHT / 2 - 1);
-    //String received = Serial.readString();
-    String received = Serial.readStringUntil('\n');
-    delay(1000);
-    display.println(received);
+    //String received = Serial.readStringUntil('\n');
+    //String received{getCharacter()};
+    char received = getCharacter();
+    //delay(10);
+    //display.println(received);
+    display.print(received);
 }
 
-char incrementing_character = 'A';
+
+void setCharacterPosition(int x, int y)
+{
+    display.setCursor(x, y);
+}
+
+
+struct Point
+{
+    Point(int x, int y)
+        :   x{x}, y{y}
+    {
+        assert(x >= 0 && x < SCREEN_WIDTH && "Point position x must be between 0 and 128\n");
+        assert(y >= 0 && y < SCREEN_HEIGHT && "Point position x must be between 0 and 32\n");
+    }
+
+    Point(const Point& other) = default;
+    Point& operator=(const Point& other) = default;
+    Point& operator=(const Point&& other) = default;
+
+    
+private:
+    int x;
+    int y;
+};
+
+
+struct Velocity
+{
+    float x;
+    float y;
+};
+
+
+struct Ball
+{
+    Point position;
+    char character;
+};
+
+
+struct Paddle
+{
+    Point position;
+
+    void draw()
+    {
+    }
+
+    bool collide(
+
+    
+};
+
+
+char getCharacter()
+{
+    if(Serial.available() > 0)
+    {
+        return Serial.read();
+    }
+}
+
 
 void setup()
 {
@@ -34,16 +101,20 @@ void setup()
     }
 
     display.display();
-    delay(500);
+    delay(100);
 
+    display.setTextSize(1);
+    display.setTextColor(WHITE);
 }
+
 
 void loop()
 {
     display.clearDisplay();
     // Actual display code here
     
-    printCharacter(incrementing_character);
+    printCharacter();
+    delay(10);
 
     // End actual display code
     display.display();
