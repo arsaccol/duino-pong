@@ -75,7 +75,9 @@ struct Paddle
     {
     }
 
-    bool collide(
+    bool collide(Ball& ball)
+    {
+    }
 
     
 };
