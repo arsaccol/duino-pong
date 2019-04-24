@@ -7,7 +7,7 @@ def main():
 
     screen = pygame.display.set_mode(size)
 
-    duino = serial.Serial('COM3', 9600)
+    duino = serial.Serial('COM5', 9600)
     time.sleep(1)
 
     while True:
