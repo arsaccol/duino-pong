@@ -51,8 +51,6 @@ struct Velocity
 struct Ball
 {
     Point position;
-    char graphics;
-
     Velocity velocity;
 
     void draw()
@@ -130,7 +128,7 @@ char getInput()
     }
 }
 
-Ball ball{{SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2}, '.', {1.5f, 1.f}};
+Ball ball{{SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2}, {1.5f, 1.f}};
 
 
 void setup()
