@@ -2,6 +2,7 @@
 #include <Wire.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
+#include <assert.h>
 
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 32
@@ -20,7 +21,7 @@ void printCharacter()
     display.setCursor(1, SCREEN_HEIGHT / 2 - 1);
     //String received = Serial.readStringUntil('\n');
     //String received{getCharacter()};
-    char received = getCharacter();
+    char received = getInput();
     //delay(10);
     //display.println(received);
     display.print(received);
@@ -35,19 +36,6 @@ void setCharacterPosition(int x, int y)
 
 struct Point
 {
-    Point(int x, int y)
-        :   x{x}, y{y}
-    {
-        assert(x >= 0 && x < SCREEN_WIDTH && "Point position x must be between 0 and 128\n");
-        assert(y >= 0 && y < SCREEN_HEIGHT && "Point position x must be between 0 and 32\n");
-    }
-
-    Point(const Point& other) = default;
-    Point& operator=(const Point& other) = default;
-    Point& operator=(const Point&& other) = default;
-
-    
-private:
     int x;
     int y;
 };
@@ -63,7 +51,38 @@ struct Velocity
 struct Ball
 {
     Point position;
-    char character;
+    char graphics;
+
+    Velocity velocity;
+
+    void draw()
+    {
+        display.drawPixel(position.x, position.y, WHITE);
+    }
+
+    void update()
+    {
+        boundary_collision();
+        position = Point
+        {
+            static_cast<int>(position.x + velocity.x),
+            static_cast<int>(position.y + velocity.y)
+        };
+    }
+
+    void boundary_collision()
+    {
+        Point possible_pos
+        {
+            static_cast<int>(position.x + velocity.x), 
+            static_cast<int>(position.y + velocity.y)
+        };
+
+        if(possible_pos.x < 0 || possible_pos.x > SCREEN_WIDTH -1)
+            velocity.x *= -1;
+        if(possible_pos.y < 0 || possible_pos.y > SCREEN_HEIGHT - 1)
+            velocity.y *= -1;
+    }
 };
 
 
@@ -73,23 +92,45 @@ struct Paddle
 
     void draw()
     {
+        display.setCursor(position.x, position.y);
+        // draw upwards and downwards...?
     }
 
     bool collide(Ball& ball)
     {
     }
 
+    void update()
+    {
+    }
+
+
     
 };
 
+struct Game
+{
+    const int left{0};
+    const int right{1};
 
-char getCharacter()
+    Paddle paddles[2] {{ Point{1, SCREEN_HEIGHT / 2 }}, { Point{SCREEN_WIDTH - 2, SCREEN_HEIGHT / 2} }};
+
+
+    Game()
+    {
+    }
+};
+
+
+char getInput()
 {
     if(Serial.available() > 0)
     {
         return Serial.read();
     }
 }
+
+Ball ball{{SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2}, '.', {1.5f, 1.f}};
 
 
 void setup()
@@ -115,7 +156,9 @@ void loop()
     display.clearDisplay();
     // Actual display code here
     
-    printCharacter();
+    ball.update();
+    ball.draw();
+    //printCharacter();
     delay(10);
 
     // End actual display code
