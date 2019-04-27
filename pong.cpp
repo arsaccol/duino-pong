@@ -11,6 +11,8 @@
 #define OLED_RESET 4
 
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
+char getInput();
+
 
 int incomingByte = 0;
 
@@ -96,6 +98,7 @@ struct Paddle
 
     bool collide(Ball& ball)
     {
+        return false;
     }
 
     void update()
@@ -126,6 +129,8 @@ char getInput()
     {
         return Serial.read();
     }
+    else
+        return '\0';
 }
 
 Ball ball{{SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2}, {1.5f, 1.f}};
@@ -153,7 +158,20 @@ void loop()
 {
     display.clearDisplay();
     // Actual display code here
+
+    char input = getInput();
     
+    if(input == 'w')
+        ball.velocity = Velocity{0.f, -1.f};
+    if(input == 's')
+        ball.velocity = Velocity{0.f, 1.f};
+    if(input == 'a')
+        ball.velocity = Velocity{-1.f, 0.f};
+    if(input == 'd')
+        ball.velocity = Velocity{1.f, 0.f};
+    input = '\0';
+
+
     ball.update();
     ball.draw();
     //printCharacter();
