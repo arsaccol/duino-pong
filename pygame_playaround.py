@@ -7,7 +7,7 @@ def main():
 
     screen = pygame.display.set_mode(size)
 
-    duino = serial.Serial('COM5', 9600)
+    duino = serial.Serial('COM6', 9600)
     time.sleep(1)
 
     while True:
@@ -20,12 +20,6 @@ def main():
             if event.type == pygame.KEYDOWN:
                 print(event.key)
                 duino.write(bytearray([event.key]))
-
-
-
-    
-    
-    
 
 if __name__ == '__main__':
     main()

@@ -9,7 +9,7 @@ import time
 import datetime
 import keyboard
 
-duino = serial.Serial('COM3', 9600)
+duino = serial.Serial('COM', 9600)
 time.sleep(1)
 
 while True:
