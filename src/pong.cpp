@@ -49,12 +49,12 @@ struct Rectangle
     Point position;
     Point size;
     
-    void draw()
+    void draw(Adafruit_SSD1306 drawingDevice)
     {
         for(int i = 0; i < size.y; ++i)
         {
             //display.(position.x, position.y + i, size.x);
-            display.drawLine(position.x, position.y + i, position.x + size.x, position.y + i, DISPLAY);
+            drawingDevice.drawLine(position.x, position.y + i, position.x + size.x, position.y + i, DISPLAY);
         }
     }
 
@@ -192,7 +192,6 @@ struct Game
             draw();
             delay(16);
         }
-
     }
 
     void update()
@@ -206,9 +205,9 @@ struct Game
     void draw()
     {
         display.clearDisplay();
-        paddles[left].draw();
-        paddles[right].draw();
-        ball.draw();
+        paddles[left].draw(display);
+        paddles[right].draw(display);
+        ball.draw(display);
 
         display.display();
     }
