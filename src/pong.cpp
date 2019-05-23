@@ -130,6 +130,7 @@ struct Ball : public Rectangle
 };
 
 
+
 struct Paddle : public Rectangle
 {
 
@@ -156,9 +157,42 @@ struct Paddle : public Rectangle
 
 struct Player
 {
-    Player(Paddle& controlledPaddle)
+    enum class Type
+    {
+        Human,
+        Computer
+    };
+
+    Type type;
+    Paddle& controlled_paddle;
+
+    Player(Paddle& controlled_paddle, Player::Type playerType)
+        :   controlled_paddle{controlled_paddle}
     {}
 
+    void update()
+    {
+        if(type == Type::Human)
+            humanUpdate();
+        else if(type == Type::Computer)
+            computerUpdate();
+
+    }
+
+    void humanUpdate()
+    {
+        char input = getInput();
+        if(input == 'w')
+            controlled_paddle.position.y -= 5;
+        else if(input == 's')
+            controlled_paddle.position.y += 5;
+    }
+
+
+    void computerUpdate()
+    {
+        controlled_paddle.position.y = rand() % SCREEN_HEIGHT;
+    }
 };
 
 
@@ -174,14 +208,13 @@ struct Game
     bool running{true};
 
     Paddle paddles[numPaddles] {{ Point{1, SCREEN_HEIGHT / 2 }}, { Point{SCREEN_WIDTH - 2, SCREEN_HEIGHT / 2} }};
-    Ball ball;
+    Player players[numPaddles] {Player{paddles[left], Player::Type::Human}, Player{paddles[right], Player::Type::Computer}};
+    Ball ball{};
 
 
     Game()
-        :   paddles{{ Point{1, SCREEN_HEIGHT / 2 }}, { Point{SCREEN_WIDTH - 2, SCREEN_HEIGHT / 2} }}
-        ,   ball{}
     {
-        ball.velocity = {1.f, -2.f};
+        ball.velocity = {2.f, -1.f};
     }
 
     void loop_frame()
@@ -196,8 +229,8 @@ struct Game
 
     void update()
     {
-        paddles[left].update();
-        paddles[right].update();
+        players[left].update();
+        players[right].update();
         ball.update();
 
     }
